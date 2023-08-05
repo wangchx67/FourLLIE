@@ -4,7 +4,7 @@
 
 This is the official pytorch implementation of "FourLLIE: Boosting Low-Light Image Enhancement by Fourier Frequency Information" **(ACM MM 2023)**
 
-![pipeline](.\figs\pipeline.png)
+![pipeline]([.\figs\pipeline.png](https://github.com/wangchx67/FourLLIE/blob/main/figs/pipeline.png))
 
 We design a two-stage framework to enhance low-light images with the help of the Fourier frequency information. In the first stage, we improve the lightness of low-light images by estimating the amplitude transform map in the Fourier space. In the second stage, we introduce the Signal-to-Noise-Ratio (SNR) map to provide the prior for integrating the global Fourier frequency and the local spatial information, which recovers image details in the spatial space. With this ingenious design, FourLLIE outperforms the existing state-of-the-art (SOTA) LLIE methods on four representative datasets while maintaining good model efficiency. 
 
