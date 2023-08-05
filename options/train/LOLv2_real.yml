@@ -1,0 +1,64 @@
+#### general settings
+name: train
+use_tb_logger: false
+model: enhancement_model
+distortion: sr
+scale: 1
+gpu_ids: [0]
+
+#### datasets
+datasets:
+  train:
+    name: ll_dataset
+    interval_list: [1]
+    random_reverse: false
+    border_mode: false
+    dataroot_GT: /data/wcx/LSRW/train/Huawei/gt
+    dataroot_LQ: /data/wcx/LSRW/train/Huawei/input
+
+    n_workers: 3  # per GPU
+    batch_size: 4
+    GT_size: 384   # size you want to crop out as input sample.
+    LQ_size: 384
+    use_flip: true
+    use_rot: true
+    color: RGB
+  val:
+    name: ll_dataset
+    dataroot_GT: /data/wcx/LSRW/eval/Huawei/gt
+    dataroot_LQ: /data/wcx/LSRW/eval/Huawei/input
+    train_size: [600, 400]
+
+#### network structures
+network_G:
+  which_model_G: FourLLIE
+  nf: 16 # 32 # 64
+
+#### path
+path:
+  root: ./
+  strict_load: false
+
+#### training settings: learning rate scheme, loss
+train:
+  lr_G: !!float 1e-4
+  lr_scheme: MultiStepLR
+  beta1: 0.9
+  beta2: 0.99
+  niter: 100000
+  lr_steps: [25000,50000, 75000,100000,150000]
+  ft_tsa_only: 0
+  warmup_iter: -1  # -1: no warm up
+  lr_gamma: 0.5
+  eta_min: !!float 1e-7
+
+  pixel_criterion: l1
+  pixel_weight: 1.0
+  val_freq: !!float 1e3
+
+  manual.resize960x512_seed: 0
+
+#### logger
+logger:
+  print_freq: 1000
+  save_checkpoint_freq: !!float 1000

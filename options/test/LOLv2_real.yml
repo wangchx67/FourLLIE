@@ -1,0 +1,24 @@
+### must be same as
+name: test
+suffix: ~  # add suffix to saved images
+model: ll_dataset
+distortion: sr
+scale: 1
+crop_border: ~  # crop border when evaluation. If None(~), crop the scale pixels
+gpu_ids: [0]
+
+datasets:
+  test:  # the 1st test dataset
+    name: test
+    dataroot_GT: /data/wcx/LSRW/eval/Huawei/gt
+    dataroot_LQ: /data/wcx/LSRW/eval/Huawei/input
+
+#### network structures
+network_G:
+  which_model_G: FourLLIE
+  nf: 16 # 32 # 64
+
+#### path
+path:
+  root: ./
+  pretrain_model_G: ./experiments/train/models/latest_G.pth
