@@ -21,8 +21,8 @@ class FourLLIE(nn.Module):
         self.conv_first_2 = nn.Conv2d(nf, nf, 3, 2, 1, bias=True)
         self.conv_first_3 = nn.Conv2d(nf, nf, 3, 2, 1, bias=True)
 
-        self.feature_extraction = arch_util.make_layer(ResidualBlock_noBN_f, 5)
-        self.recon_trunk = arch_util.make_layer(ResidualBlock_noBN_f, 10)
+        self.feature_extraction = arch_util.make_layer(ResidualBlock_noBN_f, 1)
+        self.recon_trunk = arch_util.make_layer(ResidualBlock_noBN_f, 1)
 
         self.upconv1 = nn.Conv2d(nf*2, nf * 4, 3, 1, 1, bias=True)
         self.upconv2 = nn.Conv2d(nf*2, nf * 4, 3, 1, 1, bias=True)
