@@ -10,8 +10,6 @@ gpu_ids: [4]
 datasets:
   test:  # the 1st test dataset
     name: test
-#    dataroot_GT: /data/wcx/LOL_v2/Real_captured/renamed_eval/gt
-#    dataroot_LQ: /data/wcx/LOL_v2/Real_captured/renamed_eval/input
     dataroot_GT: /data/wcx/LSRW/eval/Nikon/gt
     dataroot_LQ: /data/wcx/LSRW/eval/Nikon/input
 
@@ -25,6 +23,5 @@ path:
   root: ./
 #  pretrain_model_G: ./pre-trained/lol2-sys.pth
 #  pretrain_model_G: ./pre-trained/huawei.pth
-#  pretrain_model_G: ./pre-trained/nikon.pth
-  pretrain_model_G: /home/wangchenxi/projects/SNR-Aware-Low-Light-Enhance/experiments_before/Nikon_bs4_crop_384_skip8_nf16_reinput_L2_L2amp0.01_L2pha0.01/models/61000_G.pth
+  pretrain_model_G: ./pre-trained/nikon.pth
 #  pretrain_model_G: ./pre-trained/lol2-real.pth
