@@ -8,6 +8,14 @@ import utils.util as util
 from data import create_dataset, create_dataloader
 from models import create_model
 
+from skimage.metrics import peak_signal_noise_ratio
+from skimage.metrics import structural_similarity
+
+import lpips
+loss_fn_alex = lpips.LPIPS(net='alex').cuda()
+import torch
+import numpy as np
+
 #### options
 parser = argparse.ArgumentParser()
 parser.add_argument('-opt', type=str, default='./options/test/LOLv2_real.yml', help='Path to options YMAL file.')
@@ -48,6 +56,10 @@ def main():
         ssim_rlt_avg = {}
         ssim_total_avg = 0.
 
+        lpips_rlt = {}  # with border and center frames
+        lpips_rlt_avg = {}
+        lpips_total_avg = 0.
+
         for val_data in val_loader:
             folder = val_data['folder'][0]
             idx_d = val_data['idx']
@@ -56,6 +68,9 @@ def main():
 
             if ssim_rlt.get(folder, None) is None:
                 ssim_rlt[folder] = []
+
+            if lpips_rlt.get(folder, None) is None:
+                lpips_rlt[folder] = []
             model.feed_data(val_data)
 
             model.test()
@@ -80,12 +95,23 @@ def main():
                     import ipdb; ipdb.set_trace()
 
             # calculate PSNR
-            psnr = util.calculate_psnr(rlt_img, gt_img)
+            # psnr = util.calculate_psnr(rlt_img, gt_img)
+            psnr = peak_signal_noise_ratio(rlt_img, gt_img)
             psnr_rlt[folder].append(psnr)
 
-            ssim = util.calculate_ssim(rlt_img, gt_img)
+            # ssim = util.calculate_ssim(rlt_img, gt_img)
+            ssim = structural_similarity(rlt_img, gt_img, multichannel=True)
             # ssim = 0
             ssim_rlt[folder].append(ssim)
+
+            img, gt = rlt_img, gt_img
+            img = torch.from_numpy(np.float32(img))
+            gt = torch.from_numpy(np.float32(gt))
+            img = img.permute(2, 0, 1).unsqueeze(0).cuda()
+            gt = gt.permute(2, 0, 1).unsqueeze(0).cuda()
+            lpips_alex = loss_fn_alex(img, gt)
+            lpips_alex = lpips_alex.detach().cpu().numpy().squeeze()
+            lpips_rlt[folder].append(lpips_alex)
 
             pbar.update('Test {} - {}'.format(folder, idx_d))
         for k, v in psnr_rlt.items():
@@ -96,8 +122,13 @@ def main():
             ssim_rlt_avg[k] = sum(v) / len(v)
             ssim_total_avg += ssim_rlt_avg[k]
 
+        for k, v in lpips_rlt.items():
+            lpips_rlt_avg[k] = sum(v) / len(v)
+            lpips_total_avg += lpips_rlt_avg[k]
+
         psnr_total_avg /= len(psnr_rlt)
         ssim_total_avg /= len(ssim_rlt)
+        lpips_total_avg /= len(lpips_rlt)
         log_s = '# Validation # PSNR: {:.4e}:'.format(psnr_total_avg)
         for k, v in psnr_rlt_avg.items():
             log_s += ' {}: {:.4e}'.format(k, v)
@@ -105,6 +136,11 @@ def main():
 
         log_s = '# Validation # SSIM: {:.4e}:'.format(ssim_total_avg)
         for k, v in ssim_rlt_avg.items():
+            log_s += ' {}: {:.4e}'.format(k, v)
+        logger.info(log_s)
+
+        log_s = '# Validation # LPIPS: {:.4e}:'.format(ssim_total_avg)
+        for k, v in lpips_rlt_avg.items():
             log_s += ' {}: {:.4e}'.format(k, v)
         logger.info(log_s)
 
@@ -123,6 +159,14 @@ def main():
             ssim_count += len(v)
         ssim_all = ssim_all * 1.0 / ssim_count
         print(ssim_all)
+
+        lpips_all = 0
+        lpips_count = 0
+        for k, v in lpips_rlt.items():
+            lpips_all += sum(v)
+            lpips_count += len(v)
+        lpips_all = lpips_all * 1.0 / lpips_count
+        print(lpips_all)
 
 
 if __name__ == '__main__':

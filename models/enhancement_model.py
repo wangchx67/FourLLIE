@@ -39,7 +39,7 @@ class enhancement_model(BaseModel):
             if loss_type == 'l1':
                 self.cri_pix = nn.L1Loss().to(self.device)
             elif loss_type == 'l2':
-                self.cri_pix = nn.MSELoss().to(self.device)
+                self.cri_pix = nn.MSELoss(reduction='sum').to(self.device)
             elif loss_type == 'cb':
                 self.cri_pix = CharbonnierLoss().to(self.device)
             else:
@@ -154,10 +154,10 @@ class enhancement_model(BaseModel):
 
         l_pix = self.l_pix_w * self.cri_pix(self.fake_H, self.real_H)
         # l_pix_amp = self.l_pix_w * self.cri_pix(self.fake_H_s1, self.real_H) * 0.5
-        l_amp = self.l_pix_w * self.cri_pix(self.fake_Amp, self.real_Amp) * 0.01
+        l_amp = self.l_pix_w * self.cri_pix_ill(self.fake_Amp, self.real_Amp) * 0.01
         # l_pha = self.l_pix_w * self.cri_pix_ill2(self.fake_Pha, self.real_Pha) * 0.01
         l_vgg = self.l_pix_w * self.cri_vgg(self.fake_H, self.real_H) * 0.1
-        l_final = l_pix + l_amp  # + l_amp + l_pix_amp # + l_pix_amp +l_pha # + l_vgg + l_amp
+        l_final = l_pix + l_amp + l_vgg # +l_pha  # + l_amp + l_pix_amp # + l_pix_amp +l_pha # + l_vgg + l_amp
         l_final.backward()
         torch.nn.utils.clip_grad_norm_(self.netG.parameters(), 0.01)
         self.optimizer_G.step()

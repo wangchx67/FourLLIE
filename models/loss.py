@@ -85,7 +85,7 @@ class VGGLoss(nn.Module):
         loss = 0
         for i in range(len(x_vgg)):
             # print(x_vgg[i].shape, y_vgg[i].shape)
-            loss += self.weights[i] * self.criterion2(x_vgg[i], y_vgg[i].detach())
+            loss += self.weights[i] * self.criterion(x_vgg[i], y_vgg[i].detach())
         return loss
 
 

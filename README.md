@@ -36,6 +36,10 @@ python test.py -opt ./options/test/LOLv2_real.yml
 - LOL-real and LOL-sys can be found in [here](https://github.com/flyywh/SGM-Low-Light).
 - LSRW-Huawei and LSRW-Nikon can be found in [here](https://github.com/JianghaiSCU/R2RNet).
 
+## Pre-trained
+
+We update the pre-trained model in the `./pre-trained`. Note that the initial models of LSRW is missing and we re-trained them. The metric results may not exactly match the results reported in paper. You can freely choose any version.
+
 ## Acknowledgement
 
 This repo is based on [SNR-Aware](https://github.com/dvlab-research/SNR-Aware-Low-Light-Enhance).
@@ -47,8 +51,9 @@ If you find the project useful, please cite:
 ```
 @inproceedings{wang2023fourllie,
   title={FourLLIE: Boosting Low-Light Image Enhancement by Fourier Frequency Information},
-  author={Chenxi Wang, Hongujun Wu, and Zhi Jin},
-  booktitle={ACM MM},
+  author={Wang, Chenxi and Wu, Hongjun and Jin, Zhi},
+  booktitle={Proceedings of the 31st ACM International Conference on Multimedia},
+  pages={7459--7469},
   year={2023}
 }
 ```
