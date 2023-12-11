@@ -4,7 +4,7 @@ use_tb_logger: false
 model: enhancement_model
 distortion: sr
 scale: 1
-gpu_ids: [0]
+gpu_ids: [1]
 
 #### datasets
 datasets:
@@ -13,20 +13,24 @@ datasets:
     interval_list: [1]
     random_reverse: false
     border_mode: false
-    dataroot_GT: /data/wcx/LSRW/train/Huawei/gt
-    dataroot_LQ: /data/wcx/LSRW/train/Huawei/input
+    dataroot_GT: /data/wcx/LOL_v2/Real_captured/train/gt
+    dataroot_LQ: /data/wcx/LOL_v2/Real_captured/train/input
+#    dataroot_GT: /data/wcx/LSRW/train/Huawei/gt
+#    dataroot_LQ: /data/wcx/LSRW/train/Huawei/input
 
     n_workers: 3  # per GPU
-    batch_size: 4
-    GT_size: 384   # size you want to crop out as input sample.
-    LQ_size: 384
+    batch_size: 8
+    GT_size: 256   # size you want to crop out as input sample.
+    LQ_size: 256
     use_flip: true
     use_rot: true
     color: RGB
   val:
     name: ll_dataset
-    dataroot_GT: /data/wcx/LSRW/eval/Huawei/gt
-    dataroot_LQ: /data/wcx/LSRW/eval/Huawei/input
+    dataroot_GT: /data/wcx/LOL_v2/Real_captured/eval/gt
+    dataroot_LQ: /data/wcx/LOL_v2/Real_captured/eval/input
+#    dataroot_GT: /data/wcx/LSRW/eval/Huawei/gt
+#    dataroot_LQ: /data/wcx/LSRW/eval/Huawei/input
     train_size: [600, 400]
 
 #### network structures
@@ -52,7 +56,7 @@ train:
   lr_gamma: 0.5
   eta_min: !!float 1e-7
 
-  pixel_criterion: l1
+  pixel_criterion: l2
   pixel_weight: 1.0
   val_freq: !!float 1e3
 
